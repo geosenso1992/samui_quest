@@ -1,0 +1,59 @@
+name: samui_quest
+description: "Samui Quest - GPS Adventure Game"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  confetti: ^0.7.0
+  
+  
+  # 🗺 Map
+  flutter_map: ^6.2.1
+  latlong2: ^0.9.1
+
+  # 📍 GPS
+  geolocator: ^14.0.2
+  permission_handler: ^12.0.1
+
+  # 🧠 State management
+  provider: ^6.1.5+1
+
+  # Audio
+  audioplayers: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/samui2.jpg
+    - assets/maps/
+    - assets/icon/app_icon.png
+    - assets/monkey_player.png
+    - assets/elephant_player.png
+    - assets/frog_player.png
+    - assets/bird_player.png
+    - assets/turtle_player.png
+    - assets/audio/jungle.mp3
+    - assets/audio/walking.mp3
+    - assets/animals/
+    - assets/seeds/
+    - assets/maps/colscreen.png
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"
