@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 
 import '../providers/game_provider.dart';
 import '../services/audio_service.dart';
-import 'map_screen.dart';
+
 import 'how_to_play_screen.dart';
 import 'all_maps.dart';
 import 'avatar_select_screen.dart';
+import 'map_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -116,11 +117,11 @@ void _openSinglePlayer() async {
     context,
     MaterialPageRoute(
       builder: (_) => MapScreen(
-        selectedAvatar: selectedAvatar,
-      ),
+  selectedAvatar: selectedAvatar,
+),
     ),
   );
- }
+}
 }
 
   @override

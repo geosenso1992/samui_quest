@@ -10,14 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  
   cupertino_icons: ^1.0.8
   confetti: ^0.7.0
   
-  
   # 🗺 Map
-  flutter_map: ^6.2.1
   latlong2: ^0.9.1
+  mapbox_maps_flutter: ^2.6.0
 
   # 📍 GPS
   geolocator: ^14.0.2
@@ -52,6 +51,7 @@ flutter:
     - assets/animals/
     - assets/seeds/
     - assets/maps/colscreen.png
+    - assets/marker.png
 
 flutter_launcher_icons:
   android: true
