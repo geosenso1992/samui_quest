@@ -1,0 +1,37 @@
+[35mandroid/app/src/debug/AndroidManifest.xml[m[36m:[m<manifest xmlns:android="http://schemas.android.com/a[1;31mpk/[mres/android">
+[35mandroid/app/src/main/AndroidManifest.xml[m[36m:[m<manifest xmlns:android="http://schemas.android.com/a[1;31mpk/[mres/android"
+[35mandroid/app/src/main/res/drawable-v21/launch_background.xml[m[36m:[m<layer-list xmlns:android="http://schemas.android.com/a[1;31mpk/[mres/android">
+[35mandroid/app/src/main/res/drawable/launch_background.xml[m[36m:[m<layer-list xmlns:android="http://schemas.android.com/a[1;31mpk/[mres/android">
+Binary file [35mandroid/app/src/main/res/mipmap-hdpi/ic_launcher.png[m matches
+Binary file [35mandroid/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png[m matches
+[35mandroid/app/src/profile/AndroidManifest.xml[m[36m:[m<manifest xmlns:android="http://schemas.android.com/a[1;31mpk/[mres/android">
+Binary file [35massets/25625717_10105797435963753_177652023_o-d442b24e.jpeg[m matches
+Binary file [35massets/ChatGPT Image Feb 25, 2026, 10_18_15 AM.png[m matches
+Binary file [35massets/Mapa_de_Koh_Tao.png[m matches
+Binary file [35massets/audio/jungle.mp3[m matches
+Binary file [35massets/audio/walking.mp3[m matches
+Binary file [35massets/bird_player.png[m matches
+Binary file [35massets/eaf234d9-3b4b-4f98-898b-26afb76c7508.png[m matches
+Binary file [35massets/elephant_player.png[m matches
+Binary file [35massets/f014f1eb-0df0-4ccf-8870-587bd02838c2.png[m matches
+Binary file [35massets/frog_player.png[m matches
+Binary file [35massets/icon/app_icon.png[m matches
+Binary file [35massets/istockphoto-1155366954-1024x1024.jpg[m matches
+Binary file [35massets/maps/Chang.png[m matches
+Binary file [35massets/maps/Phangan.png[m matches
+Binary file [35massets/maps/Phuket.png[m matches
+Binary file [35massets/maps/Tao.png[m matches
+Binary file [35massets/maps/colscreen.png[m matches
+Binary file [35massets/maps/jungle.jpg[m matches
+Binary file [35massets/monkey_player.png[m matches
+Binary file [35massets/phuket-thailand-physical-no-legend-province-colored-elevation-map-lakes-rivers-270687142.webp[m matches
+Binary file [35massets/samui.jpg[m matches
+Binary file [35massets/samui2.jpg[m matches
+Binary file [35massets/seeds/pineapple_label.png[m matches
+Binary file [35massets/turtle_player.png[m matches
+Binary file [35mflutter_01.png[m matches
+[35mlinux/CMakeLists.txt[m[36m:[m[1;31mpkg[m_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
+[35mlinux/flutter/CMakeLists.txt[m[36m:[m[1;31mpkg[m_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
+[35mlinux/flutter/CMakeLists.txt[m[36m:[m[1;31mpkg[m_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
+[35mlinux/flutter/CMakeLists.txt[m[36m:[m[1;31mpkg[m_check_modules(GIO REQUIRED IMPORTED_TARGET gio-2.0)
+Binary file [35mmacos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png[m matches
