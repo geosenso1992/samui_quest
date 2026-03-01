@@ -159,51 +159,98 @@ class _MapScreenState extends State<MapScreen> {
 
           // ================= XP BAR =================
 
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    Text(
-                      "Level ${game.level}  •  ${game.xp} / ${game.xpNeeded} XP",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: game.xp / game.xpNeeded,
-                        minHeight: 14,
-                        backgroundColor: Colors.white24,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.greenAccent,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+Positioned(
+  top: 0,
+  left: 0,
+  right: 0,
+  child: SafeArea(
+    child: Center(
+      child: FractionallySizedBox(
+        widthFactor: 0.4,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 10,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.45),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.15),
+                width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.greenAccent.withOpacity(0.25),
+                  blurRadius: 12,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Level ${game.level}  •  ${game.xp} / ${game.xpNeeded} XP",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 6,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 10,
+                        color: Colors.white24,
+                      ),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final progress =
+                              game.xp / game.xpNeeded;
+
+                          return Container(
+                            height: 14,
+                            width: constraints.maxWidth * progress,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF00FFAA),
+                                  Color(0xFF00CCFF),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-
+        ),
+      ),
+    ),
+  ),
+),
           // ================= MINI RADAR =================
 
           Positioned(
             top: 20,
-            right: 20,
+            left: 20,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -280,21 +327,21 @@ class _MapScreenState extends State<MapScreen> {
           // ================= DISTANCE BAR =================
 
           Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
+            bottom: 20,
+            left: 80,
+            right: 80,
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.75),
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                "Distance to nearest quest: ${nearestDistance.toStringAsFixed(0)} meters",
+                "Nearest quest: ${nearestDistance.toStringAsFixed(0)} meters",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 13,
+                  fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),

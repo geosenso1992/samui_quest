@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+  image: ^4.1.7
+
   cupertino_icons: ^1.0.8
   confetti: ^0.7.0
   
@@ -52,6 +53,7 @@ flutter:
     - assets/seeds/
     - assets/maps/colscreen.png
     - assets/marker.png
+    - assets/quest_red.png
 
 flutter_launcher_icons:
   android: true
