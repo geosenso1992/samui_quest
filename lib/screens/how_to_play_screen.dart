@@ -12,14 +12,14 @@ class HowToPlayScreen extends StatelessWidget {
           // Background image
           SizedBox.expand(
             child: Image.asset(
-              "assets/samui2.jpg",
+              "assets/samui2.jpeg",
               fit: BoxFit.cover,
             ),
           ),
 
           // Dark overlay
           Container(
-            color: Colors.black.withOpacity(0.6),
+            color: Colors.black.withValues(alpha: 0.6),
           ),
 
           // Content
@@ -50,7 +50,7 @@ class HowToPlayScreen extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.green.shade900.withOpacity(0.9),
+                        color: Colors.green.shade900.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: Colors.greenAccent,

@@ -26,9 +26,6 @@ class _MapboxTestScreenState extends State<MapboxTestScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    print("🚨 MAPBOX TEST SCREEN BUILD");
-
     return Scaffold(
       body: MapWidget(
         onMapCreated: _onMapCreated,

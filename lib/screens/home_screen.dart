@@ -1,27 +1,32 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+import 'register_screen.dart';
 import '../providers/game_provider.dart';
 import '../services/audio_service.dart';
 
 import 'how_to_play_screen.dart';
 import 'all_maps.dart';
-import 'avatar_select_screen.dart';
 import 'map_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool showMenuImmediately;
+
+  const HomeScreen({
+    super.key,
+    this.showMenuImmediately = false,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   bool _showMenu = false;
+  bool _isSyncing = false;
 
   late AnimationController _zoomController;
   late Animation<double> _zoomAnimation;
@@ -30,22 +35,22 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _showMenu = widget.showMenuImmediately;
 
-    Future.microtask(() {
-      final game = context.read<GameProvider>();
-      game.loadLocations();
-      game.startTracking();
-    });
+    final game = context.read<GameProvider>();
+    game.loadLocations();
+    game.startTracking();
 
-    // ✅ START JUNGLE AUDIO
+    // START JUNGLE AUDIO
     _startAudio();
 
     _zoomController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 16),
     );
 
-    _zoomAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+    _zoomAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
       CurvedAnimation(
         parent: _zoomController,
         curve: Curves.easeOut,
@@ -59,31 +64,38 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
 
-    _zoomController.forward();
-
-    Timer(const Duration(seconds: 10), () {
-      if (mounted) {
-        setState(() {
-          _showMenu = true;
-        });
-      }
-    });
+    if (!_showMenu) {
+      _zoomController.forward();
+      Timer(const Duration(seconds: 10), () {
+        if (mounted) {
+          setState(() {
+            _showMenu = true;
+          });
+        }
+      });
+    }
   }
 
-  // ✅ FIXED AUDIO START METHOD
   Future<void> _startAudio() async {
     await AudioService().init();
     await AudioService().playBackground();
+    await AudioService().setBackgroundVolume(0.12);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _zoomController.dispose();
-
-    // ❌ REMOVED stopBackground() HERE
-    // We let MapScreen replace the music instead.
-
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      context.read<GameProvider>().persistNow();
+    }
   }
 
   void _openHowToPlayScreen() {
@@ -104,25 +116,45 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-void _openSinglePlayer() async {
-  final selectedAvatar = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const AvatarSelectScreen(),
-    ),
-  );
+  // Tijdelijk: altijd de monkey avatar gebruiken (geen keuzemenu)
+  Future<void> _handleSinglePlayer(GameProvider game) async {
+    if (_isSyncing) return;
+    setState(() => _isSyncing = true);
+    game.currentAvatar = 'assets/monkey_player.png';
+    var didSync = false;
 
- if (selectedAvatar != null) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => MapScreen(
-  selectedAvatar: selectedAvatar,
-),
-    ),
-  );
-}
-}
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception("No user session");
+      }
+      didSync = await game
+          .syncUserDataWithFallback(user.uid)
+          .timeout(const Duration(seconds: 12));
+    } on TimeoutException {
+      // ignore here, handled below
+    } catch (_) {
+      // ignore here, handled below
+    } finally {
+      if (!mounted) return;
+      setState(() => _isSyncing = false);
+    }
+
+    if (!mounted) return;
+    if (!didSync) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Offline mode: showing last saved data."),
+        ),
+      );
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MapScreen(selectedAvatar: game.currentAvatar),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +166,15 @@ void _openSinglePlayer() async {
     );
   }
 
+  String _startupBackgroundForOrientation(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+    return orientation == Orientation.landscape
+        ? "assets/seedscape1.png"
+        : "assets/seedscape2.png";
+  }
+
   Widget _buildSplash() {
+    final backgroundAsset = _startupBackgroundForOrientation(context);
     return AnimatedBuilder(
       key: const ValueKey("splash"),
       animation: _zoomController,
@@ -144,9 +184,9 @@ void _openSinglePlayer() async {
           child: Transform.scale(
             scale: _zoomAnimation.value,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/samui2.jpg"),
+                  image: AssetImage(backgroundAsset),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -158,80 +198,113 @@ void _openSinglePlayer() async {
   }
 
   Widget _buildMenu() {
-    return Container(
-      key: const ValueKey("menu"),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/samui2.jpg"),
-          fit: BoxFit.cover,
+    final backgroundAsset = _startupBackgroundForOrientation(context);
+    final gameProvider = context.watch<GameProvider>();
+    
+    // Bepaal de tekst voor de hoofdknop
+    String singlePlayerText = (gameProvider.username != 'Onbekende Speler') 
+        ? "Continue Journey" 
+        : "Singleplayer";
+
+    return Stack(
+      children: [
+        Container(
+        key: const ValueKey("menu"),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundAsset),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
       child: Container(
         color: Colors.black.withOpacity(0.65),
-        child: Center(
+        child: Align(
+          alignment: const Alignment(0, 0.7),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Hoofdknop: Start of Continue
+              _menuButton(singlePlayerText, () => _handleSinglePlayer(gameProvider)),
+              const SizedBox(height: 20),
 
-              const Text(
-                "Samui\nAdventure\nQuest",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                ),
-              ),
+              _menuButton("Multiplayer", () {}),
+              const SizedBox(height: 20),
 
-              const SizedBox(height: 50),
+              _menuButton("How to Play", _openHowToPlayScreen),
+              const SizedBox(height: 20),
 
-              _menuButton("Singleplayer"),
+              _menuButton("Explore Continents", _openExploreMaps),
               const SizedBox(height: 30),
 
-              _menuButton("Multiplayer"),
-              const SizedBox(height: 30),
-
-              _menuButton("How to Play"),
-              const SizedBox(height: 30),
-
-              _menuButton("Explore All Maps"),
+              _menuButton("Log out", () async {
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              }),
             ],
           ),
         ),
       ),
+    ),
+        if (_isSyncing)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.5),
+              child: Align(
+                alignment: const Alignment(0, -0.5),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      "Loading your journey...",
+                      style: TextStyle(
+                        color: Color(0xFFFFB74D),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
-  Widget _menuButton(String text) {
+  Widget _menuButton(String text, VoidCallback onPressed) {
     return ElevatedButton(
-      onPressed: () {
-        if (text == "How to Play") {
-          _openHowToPlayScreen();
-        } else if (text == "Explore All Maps") {
-          _openExploreMaps();
-        } else {
-          _openSinglePlayer();
-        }
-      },
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(220, 60),
-        backgroundColor: text == "How to Play"
-            ? Colors.green.shade700
-            : text == "Explore All Maps"
-                ? Colors.orange.shade700
-                : Colors.blueAccent,
+        minimumSize: const Size(250, 60),
+        backgroundColor:
+            const Color(0xFF1F2A66).withValues(alpha: 0.78),
+        foregroundColor: const Color(0xFFFFCC00),
+        side: BorderSide(
+          color: const Color(0xFF11194A).withValues(alpha: 0.95),
+          width: 2,
+        ),
+        elevation: 6,
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: Text(text),
     );
   }
 }

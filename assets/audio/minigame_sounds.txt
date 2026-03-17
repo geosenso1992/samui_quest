@@ -1,0 +1,17 @@
+air:
+background wind sound
+hit target sound
+congrats sound
+failed sound
+
+land:
+background jungle sound
+lock cage sound
+congrats sound
+failed sound
+
+water: 
+spinning rod sound
+underwater sound (dolphin)
+splash sound
+

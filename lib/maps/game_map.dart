@@ -18,10 +18,10 @@ abstract class GameMap extends StatelessWidget {
   final ValueChanged<double>? onRotationChanged;
 
   const GameMap({
-    Key? key,
+    super.key,
     required this.playerPosition,
     required this.locations,
     required this.visited,
     this.onRotationChanged,
-  }) : super(key: key);
+  });
 }

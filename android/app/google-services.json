@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "746034078897",
+    "project_id": "seedscape26",
+    "storage_bucket": "seedscape26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746034078897:android:45dd9a800bdd4883482e90",
+        "android_client_info": {
+          "package_name": "com.example.samui_quest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh7UF5Fg3djyDISnOT-GUIRE2Z0b6SVbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746034078897:android:12f5ebaded1d078b482e90",
+        "android_client_info": {
+          "package_name": "com.geosenso.seedscape"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh7UF5Fg3djyDISnOT-GUIRE2Z0b6SVbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
